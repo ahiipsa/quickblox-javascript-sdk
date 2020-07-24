@@ -21,9 +21,9 @@ if (Utils.getEnv().browser) {
     Strophe.addNamespace('PRIVACY_LIST', chatUtils.MARKERS.PRIVACY);
     Strophe.addNamespace('CHAT_STATES', chatUtils.MARKERS.STATES);
 } else if (Utils.getEnv().nativescript) {
-    XMPP = require('nativescript-xmpp-client');
+    //XMPP = require('nativescript-xmpp-client');
 } else if (Utils.getEnv().node)  {
-    XMPP = require('node-xmpp-client');
+    //XMPP = require('node-xmpp-client');
 }
 
 
@@ -78,7 +78,7 @@ function ChatProxy(service) {
     }
 
     this.service = service;
-        
+
     // Check the chat connection (return true/false)
     this.isConnected = false;
     // Check the chat connecting state (return true/false)
@@ -709,13 +709,13 @@ ChatProxy.prototype = {
                     case Strophe.Status.CONNFAIL:
                         self.isConnected = false;
                         self._isConnecting = false;
-                        
+
                         err = Utils.getError(422, 'Status.CONNFAIL - The connection attempt failed', 'QBChat');
-                        
+
                         if (isInitialConnect) {
                             callback(err, null);
                         }
-                        
+
                         break;
                     case Strophe.Status.AUTHENTICATING:
                         Utils.QBLog('[QBChat]', 'Status.AUTHENTICATING');
@@ -724,35 +724,35 @@ ChatProxy.prototype = {
                     case Strophe.Status.AUTHFAIL:
                         self.isConnected = false;
                         self._isConnecting = false;
-                        
+
                         err = Utils.getError(401, 'Status.AUTHFAIL - The authentication attempt failed', 'QBChat');
-                        
+
                         if (isInitialConnect) {
                             callback(err, null);
                         }
-                        
+
                         if(!self.isConnected && typeof self.onReconnectFailedListener === 'function'){
                             Utils.safeCallbackCall(self.onReconnectFailedListener, err);
                         }
-                        
+
                         break;
                     case Strophe.Status.CONNECTING:
                         Utils.QBLog('[QBChat]', 'Status.CONNECTING', '(Chat Protocol - ' + (config.chatProtocol.active === 1 ? 'BOSH' : 'WebSocket' + ')'));
-            
+
                         break;
                     case Strophe.Status.CONNECTED:
                         // Remove any handlers that might exist from a previous connection via
                         // extension method added to the connection on initialization in qbMain.
                         // NOTE: streamManagement also adds handlers, so do this first.
                         self.connection.XDeleteHandlers();
-                        
+
                         self.connection.XAddTrackedHandler(self._onMessage, null, 'message', 'chat');
                         self.connection.XAddTrackedHandler(self._onMessage, null, 'message', 'groupchat');
                         self.connection.XAddTrackedHandler(self._onPresence, null, 'presence');
                         self.connection.XAddTrackedHandler(self._onIQ, null, 'iq');
                         self.connection.XAddTrackedHandler(self._onSystemMessageListener, null, 'message', 'headline');
                         self.connection.XAddTrackedHandler(self._onMessageErrorListener, null, 'message', 'error');
-                    
+
                         self._postConnectActions(function(roster) {
                             callback(null, roster);
                         }, isInitialConnect);
@@ -795,13 +795,13 @@ ChatProxy.prototype = {
             self.Client.on('auth', function() {
                 Utils.QBLog('[QBChat]', 'Status.AUTHENTICATING');
             });
-                    
+
             self.Client.on('online', function() {
                 self._postConnectActions(function(roster) {
                     callback(null, roster);
                 }, isInitialConnect);
             });
-    
+
             self.Client.on('stanza', function(stanza) {
                 Utils.QBLog('[QBChat] RECV:', stanza.toString());
                 /**
@@ -822,25 +822,25 @@ ChatProxy.prototype = {
                     }
                 }
             });
-            
+
             self.Client.on('disconnect', function() {
                 Utils.QBLog('[QBChat]', 'Status.DISCONNECTED - ' + chatUtils.getLocalTime());
 
                 if (typeof self.onDisconnectedListener === 'function') {
                     Utils.safeCallbackCall(self.onDisconnectedListener);
                 }
-                
+
                 self.isConnected = false;
                 self._isConnecting = false;
 
                 // reconnect to chat and enable check connection
                 self._establishConnection(params);
             });
-            
+
             self.Client.on('error', function() {
                 Utils.QBLog('[QBChat]', 'Status.ERROR - ' + chatUtils.getLocalTime());
                 err = Utils.getError(422, 'Status.ERROR - An error has occurred', 'QBChat');
-    
+
                 if (isInitialConnect) {
                     callback(err, null);
                 }
@@ -850,7 +850,7 @@ ChatProxy.prototype = {
             });
 
             self.Client.on('end', function() {
-                self.Client.removeAllListeners();                
+                self.Client.removeAllListeners();
             });
 
             self.Client.options.jid = userJid;
@@ -861,7 +861,7 @@ ChatProxy.prototype = {
 
     /**
      * Actions after the connection is established
-     * 
+     *
      * - enable stream management (the configuration setting);
      * - save user's JID;
      * - enable carbons;
@@ -875,14 +875,14 @@ ChatProxy.prototype = {
         var self = this,
             xmppClient = Utils.getEnv().browser ? self.connection : self.Client,
             presence = Utils.getEnv().browser ? $pres() : chatUtils.createStanza(XMPP.Stanza, null, 'presence');
-                
+
         if (config.streamManagement.enable && config.chatProtocol.active === 2) {
             self.streamManagement.enable(self.connection, null);
             self.streamManagement.sentMessageCallback = self._sentMessageCallback;
         }
 
         self.helpers.setUserCurrentJid(self.helpers.userCurrentJid(xmppClient));
-        
+
         self.isConnected = true;
         self._isConnecting = false;
 
@@ -897,7 +897,7 @@ ChatProxy.prototype = {
             });
         } else {
             var rooms = Object.keys(self.muc.joinedRooms);
-            
+
             xmppClient.send(presence);
 
             Utils.QBLog('[QBChat]', 'Re-joining ' + rooms.length + " rooms...");
@@ -914,7 +914,7 @@ ChatProxy.prototype = {
 
     _establishConnection: function(params) {
         var self = this;
-        
+
         if (self._isLogout || self._checkConnectionTimer) {
             return;
         }
@@ -1582,7 +1582,7 @@ MucProxy.prototype = {
             var id = chatUtils.getAttr(stanza, 'id');
             var from = chatUtils.getAttr(stanza, 'from');
             var dialogId = self.helpers.getDialogIdFromNode(from);
-            
+
             var x = chatUtils.getElement(stanza, 'x');
             var xXMLNS = chatUtils.getAttr(x, 'xmlns');
             var status = chatUtils.getElement(x, 'status');
@@ -1604,7 +1604,7 @@ MucProxy.prototype = {
                     var errorEl = chatUtils.getElement(stanza, 'error');
                     var code = chatUtils.getAttr(errorEl, 'code');
                     var errorMessage = chatUtils.getElementText(errorEl, 'text');
-    
+
                     Utils.safeCallbackCall(callback, {
                         code: code || 500,
                         message: errorMessage || 'Unknown issue'

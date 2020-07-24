@@ -10,8 +10,8 @@ var Utils = require('./qbUtils');
 var qbFetch, qbFormData;
 
 if (Utils.getEnv().node) {
-    qbFetch = require('node-fetch');
-    qbFormData = require('form-data');
+    //qbFetch = require('node-fetch');
+    //qbFormData = require('form-data');
 } else {
     qbFetch = fetch;
     qbFormData = FormData;
@@ -90,7 +90,7 @@ ServiceProxy.prototype = {
 
         if (params.data) {
             qbRequestBody = _getBodyRequest();
-            
+
             if (isGetOrHeadType) {
                 qbUrl += '?' + qbRequestBody;
             } else {

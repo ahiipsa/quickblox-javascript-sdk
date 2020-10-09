@@ -1,7 +1,7 @@
 {
   "name": "quickblox-browser",
   "description": "QuickBlox JavaScript SDK",
-  "version": "2.12.7",
+  "version": "2.12.8",
   "homepage": "https://quickblox.com/developers/Javascript",
   "main": "src/qbMain.js",
   "license": "(Apache-2.0)",
@@ -37,22 +37,22 @@
     "email": "web@quickblox.com"
   },
   "dependencies": {
-    "lodash": ">=4.17.13",
-    "lodash.template": ">=4.5.0",
-    "handlebars": ">=4.1.0",
-    "js-yaml": ">=3.13.1",
-    "marked": "^0.6.0",
-    "ws": ">=3.3.1",
-    "node.extend": ">=1.1.7",
     "cached-path-relative": ">=1.0.2",
     "crypto-js": "3.1.2-2",
     "form-data": "^2.3.1",
+    "handlebars": ">=4.1.0",
+    "js-yaml": ">=3.13.1",
+    "lodash": ">=4.17.13",
+    "lodash.template": ">=4.5.0",
+    "marked": "^0.6.0",
     "nativescript-xmpp-client": "^1.2.0",
     "node-fetch": "^1.7.3",
     "node-xmpp-client": "^3.0.0",
+    "node.extend": ">=1.1.7",
     "sdp-transform": "^2.3.0",
     "strophe.js": "1.2.12",
-    "webrtc-adapter": "^5.0.6"
+    "webrtc-adapter": "^5.0.6",
+    "ws": ">=3.3.1"
   },
   "devDependencies": {
     "browserify": "^13.1.0",

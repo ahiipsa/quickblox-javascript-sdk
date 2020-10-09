@@ -19211,7 +19211,19 @@ ServiceProxy.prototype = {
     handleResponse: function(error, response, next, retry) {
         // can add middleware here...
 
-        if (error && typeof config.on.sessionExpired === 'function' && (error.message === 'Unauthorized' || error.status === '401 Unauthorized')) {
+        const isSessionExpiredError = (err) => {
+            if ((err.message === 'Unauthorized' || err.status === '401 Unauthorized')) {
+                return true;
+            }
+            const message = err && err.detail && Utils.isArray(err.detail.base) && err.detail.base[0];
+            if (message === "Required session does not exist") {
+                return true;
+            }
+
+            return false;
+        };
+
+        if (error && typeof config.on.sessionExpired === 'function' && isSessionExpiredError(error)) {
             config.on.sessionExpired(function() {
                 next(error,response);
             }, retry);
